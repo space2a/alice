@@ -1,11 +1,4 @@
-﻿using alice.engine.graphics;
-using alice.engine.internals;
-using alice.engine.maths;
-
-using Color = alice.engine.graphics.Color;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-
-namespace alice.engine.uicomponents
+﻿namespace alice.engine
 {
     public class Progressbar : UIComponent
     {
@@ -33,8 +26,8 @@ namespace alice.engine.uicomponents
         public Texture2D backgroundTexture = LoadEmbeddedResources.LoadTexture("progressbar.png", "images");
         public Texture2D progressTexture;
 
-        private Rectangle progressRectangle = new Rectangle();
-        private Rectangle indeterminateRectangle = new Rectangle(0, 0, 20, 20);
+        private Microsoft.Xna.Framework.Rectangle progressRectangle = new Microsoft.Xna.Framework.Rectangle();
+        private Microsoft.Xna.Framework.Rectangle indeterminateRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, 20, 20);
 
         public bool useShape = false;
         public Color backgroundRectangleColor = new Color(30, 30, 30);
@@ -99,7 +92,7 @@ namespace alice.engine.uicomponents
             //Console.WriteLine(progress + " / " + progressRectangle.Width);
         }
 
-        public Rectangle CreateIndeterminateRectangle()
+        public Microsoft.Xna.Framework.Rectangle CreateIndeterminateRectangle()
         {
             var erectangle = ElementRectangle;
 
@@ -112,9 +105,9 @@ namespace alice.engine.uicomponents
             return indeterminateRectangle;
         }
 
-        internal override Rectangle GetElementRectangle()
+        internal override Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {
-            var rec = new Rectangle((int)transform.position.X,
+            var rec = new Microsoft.Xna.Framework.Rectangle((int)transform.position.X,
             (int)transform.position.Y,
             (int)(backgroundTexture.texture2D.Width + 300 * transform.scale.X), (int)(backgroundTexture.texture2D.Height * transform.scale.Y));
 

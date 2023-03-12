@@ -1,13 +1,7 @@
-﻿using alice.engine.internals;
-
-using Microsoft.Xna.Framework;
-
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Threading;
 
-namespace alice.engine.graphics
+namespace alice.engine
 {
     public class Texture2D
     {
@@ -15,7 +9,7 @@ namespace alice.engine.graphics
 
         internal Microsoft.Xna.Framework.Graphics.Texture2D texture2D;
 
-        public alice.engine.maths.Vector2 offset = alice.engine.maths.Vector2.Zero;
+        public alice.engine.Vector2 offset = alice.engine.Vector2.Zero;
 
         public bool dontDestroy = false;
 
@@ -69,15 +63,14 @@ namespace alice.engine.graphics
             texture2D.SetData(Enumerable.Repeat(color.color, width * height).ToArray());
         }
 
-
-        public bool SetPixel(Color color, int x, int y)
+        public bool SetPixel(int x, int y, Color color)
         {
             if (x > texture2D.Width || y > texture2D.Height) return false;
             else if (x < 0 || y < 0) return false;
 
             if (x == texture2D.Width) x--;
             if (y == texture2D.Height) y--;
-            texture2D.SetData(0, new Rectangle(x, y, 1, 1), new Microsoft.Xna.Framework.Color[1] { color.color }, 0, 1);
+            texture2D.SetData(0, new Microsoft.Xna.Framework.Rectangle(x, y, 1, 1), new Microsoft.Xna.Framework.Color[1] { color.color }, 0, 1);
             return true;
         }
 

@@ -1,13 +1,9 @@
 ﻿using System;
-using alice.engine.graphics;
-using alice.engine.maths;
+
 
 using Microsoft.Xna.Framework;
 
-using Vector2 = alice.engine.maths.Vector2;
-using Vector3 = Microsoft.Xna.Framework.Vector3;
-
-namespace alice.engine.components
+namespace alice.engine
 {
     [UniqueComponent]
     public class Camera : Component
@@ -17,12 +13,11 @@ namespace alice.engine.components
 
         public Canvas canvas;
 
-        public alice.engine.maths.Vector3 rotation = new alice.engine.maths.Vector3(0f, 1f, 0f);
-        public Vector2 position { get { return _position; } set { _position = value; CreateBoundingRectangle(); } }
+        public alice.engine.Vector3 rotation = new alice.engine.Vector3(0f, 1f, 0f);
+        public Vector3 position { get { return _position; } set { _position = value; CreateBoundingRectangle(); } }
 
-        private Vector2 _position;
-        internal float _z, baseZ;
-        public float z { get { return _z; } set { _z = value; CreateBoundingRectangle(); } }
+        private Vector3 _position;
+        internal float baseZ;
 
         private float aspectRatio;
         private float fieldOfView;
@@ -30,31 +25,31 @@ namespace alice.engine.components
         internal Matrix view, proj;
 
         private float _zoom = 1;
-        public float zoom { get { return _zoom; } set { _zoom = value; z = baseZ / _zoom; CreateBoundingRectangle(); } }
+        public float zoom { get { return _zoom; } set { _zoom = value; position.Z = baseZ / _zoom; CreateBoundingRectangle(); } }
         public float minZoom = 0.55f;
         public float maxZoom = 20;
 
         private bool needToRecalculteBR = true;
 
-        public maths.Rectangle boundingRectangle { get; private set; }
+        public engine.Rectangle boundingRectangle { get; private set; }
         internal Microsoft.Xna.Framework.Rectangle XNABoundingRectangle { get; private set; }
 
         public Camera()
         {
-            _position = new Vector2(0);
+            _position = new Vector3(0, 0, 0);
 
             aspectRatio = (float)Launcher.core.windowProfile.renderedResolution.width / Launcher.core.windowProfile.renderedResolution.height;
             fieldOfView = MathHelper.PiOver2;
 
             baseZ = GetZFromHeight(Launcher.core.windowProfile.renderedResolution.height);
-            _z = baseZ;
+            position.Z = baseZ;
 
             UpdateMatrices();
         }
         
         internal void UpdateMatrices()
         {
-            view = Matrix.CreateLookAt(new Vector3(_position.X, _position.Y, _z), new Vector3(_position.X, _position.Y, 0) + rotation.ToXna(), Vector3.Up);
+            view = Matrix.CreateLookAt(new Microsoft.Xna.Framework.Vector3(_position.X, _position.Y, _position.Z), new Microsoft.Xna.Framework.Vector3(_position.X, _position.Y, 0) + rotation.ToXna(), Microsoft.Xna.Framework.Vector3.Up);
             proj = Matrix.CreatePerspectiveFieldOfView(fieldOfView, aspectRatio, MinZ, MaxZ);
         }
 
@@ -65,23 +60,28 @@ namespace alice.engine.components
 
         public float GetHeightFromZ()
         {
-            return z * MathF.Tan(0.5f * fieldOfView) * 2f;
+            return position.Z * MathF.Tan(0.5f * fieldOfView) * 2f;
         }
 
         private void MoveZ(float amount)
         {
-            _z += amount;
+            position.Z += amount;
             //clamp z between minz and maxz
         }
 
-        public void ResetZ() { z = baseZ; }
+        public void ResetZ() { position.Z = baseZ; }
 
-        public void Move(Vector2 amout)
+        public void Move(Vector3 amout)
         {
             position += amout;
         }
 
         public void MoveTo(Vector2 position)
+        {
+            this.position = new Vector3(position.X, position.Y, 0);
+        }
+
+        public void MoveTo(Vector3 position)
         {
             this.position = position;
         }
@@ -89,19 +89,19 @@ namespace alice.engine.components
         public void ZoomIn()
         {
             zoom = MathU.Clamp(zoom += 0.025f, minZoom, maxZoom);
-            z = baseZ / zoom;
+            position.Z = baseZ / zoom;
         }
 
         public void ZoomOut()
         {
             zoom = MathU.Clamp(zoom -= 0.025f, minZoom, maxZoom);
-            z = baseZ / zoom;
+            position.Z = baseZ / zoom;
         }
 
         public void SetZoom(float zoom)
         {
             this.zoom = zoom;
-            z = baseZ / zoom;
+            position.Z = baseZ / zoom;
         }
 
         public void GetExtents(out float width, out float height)
@@ -131,7 +131,7 @@ namespace alice.engine.components
             if (!needToRecalculteBR) return;
             GetExtents(out float width, out float height);
 
-            boundingRectangle = new maths.Rectangle((int)(position.X - width / 2), (int)(position.Y - height / 2), (int)width, (int)height);
+            boundingRectangle = new engine.Rectangle((int)(position.X - width / 2), (int)(position.Y - height / 2), (int)width, (int)height);
             XNABoundingRectangle = boundingRectangle.ToXnaRectangle();
         }
 
@@ -139,11 +139,11 @@ namespace alice.engine.components
         {
             float interpolation = smoothTime * ellapsedTime;
 
-            Vector3 pos = position.ToXNAVector3();
+            Microsoft.Xna.Framework.Vector3 pos = position.ToXna();
             pos.X = MathHelper.Lerp(position.X, target.X, interpolation);
             pos.Y = MathHelper.Lerp(position.Y, target.Y, interpolation);
 
-            position = new Vector2(pos.X, pos.Y);
+            position = new Vector3(pos.X, pos.Y, pos.Z);
         }
 
         internal void DrawCanvas(Sprites spriteBatch)

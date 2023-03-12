@@ -1,15 +1,4 @@
-﻿using System;
-using System.Diagnostics.SymbolStore;
-using System.Numerics;
-using alice.engine.components;
-using alice.engine.graphics;
-using alice.engine.maths;
-
-using Microsoft.Xna.Framework.Graphics;
-
-using Texture2D = alice.engine.graphics.Texture2D;
-
-namespace alice.engine
+﻿namespace alice.engine
 {
 
     public class Scenery
@@ -114,7 +103,7 @@ namespace alice.engine
                 SpritesBatch.Draw(sceneryTexture.texture2D, Launcher.core.windowProfile.XNAboundningRectangle, Color.White.color);
             else if(scalingType == ScalingType.Camera)
             {
-                SpritesBatch.Draw(sceneryTexture.texture2D, camera.XNABoundingRectangle, alice.engine.graphics.Color.White.color);
+                SpritesBatch.Draw(sceneryTexture.texture2D, camera.XNABoundingRectangle, alice.engine.Color.White.color);
             }
         }
     }

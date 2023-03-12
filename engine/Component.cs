@@ -1,21 +1,6 @@
-﻿using alice.engine.graphics;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
-using MonoGame.Extended;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace alice.engine
+﻿namespace alice.engine
 {
-    public class Component
+    public abstract class Component
     {
         internal GameObject gameObject;
         internal Transform transform

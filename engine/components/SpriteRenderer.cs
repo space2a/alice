@@ -1,12 +1,4 @@
-﻿using System;
-
-using alice.engine.graphics;
-
-using Microsoft.Xna.Framework;
-
-using Color = alice.engine.graphics.Color;
-
-namespace alice.engine.components
+﻿namespace alice.engine
 {
     public class SpriteRenderer : Component
     {

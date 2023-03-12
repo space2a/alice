@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using alice.engine.graphics;
-
-namespace alice.engine.uicomponents
+namespace alice.engine
 {
     public class Dropdown : UIComponent
     {

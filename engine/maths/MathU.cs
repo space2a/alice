@@ -1,12 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace alice.engine.maths
+namespace alice.engine
 {
     public static class MathU
     {
@@ -40,6 +34,13 @@ namespace alice.engine.maths
         public static float ToRadians(float degrees)
         {
             return (float)((double)degrees * (Math.PI / 180.0));
+        }
+
+        public static void Normalize(ref float x, ref float y)
+        {
+            float len = 1f /MathF.Sqrt(x * x + y * y);
+            x *= len;
+            y *= len;
         }
 
     }

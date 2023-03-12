@@ -1,14 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
 
-using MonoGame.Extended;
-
-using Newtonsoft.Json.Linq;
-
-using System;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-
-namespace alice.engine.maths
+namespace alice.engine
 {
     public class Vector2
     {
@@ -156,6 +148,7 @@ namespace alice.engine.maths
             }
             return true;
         }
+
         public static bool isNaN(Vector2 vector2)
         {
             if (!float.IsNaN(vector2.X))
@@ -163,11 +156,6 @@ namespace alice.engine.maths
                 return float.IsNaN(vector2.Y);
             }
             return true;
-        }
-
-        public override string ToString()
-        {
-            return X + ";" + Y;
         }
 
         public static Vector2 Subtract(Vector2 value1, Vector2 value2)
@@ -191,6 +179,31 @@ namespace alice.engine.maths
             value.X *= num;
             value.Y *= num;
             return value;
+        }
+
+        public static float Distance(Vector2 value1, Vector2 value2)
+        {
+            float x = MathF.Abs((MathF.Max(value1.X, value2.X) - MathF.Min(value1.X, value2.X)));
+            float y = MathF.Abs((MathF.Max(value1.Y, value2.Y) - MathF.Min(value1.Y, value2.Y)));
+
+            return MathF.Sqrt(x * x + y * y);
+        }
+
+        public static float Cross(Vector2 value1, Vector2 value2)
+        {
+            return value1.X * value2.Y
+                   - value1.Y * value2.X;
+        }
+
+        public static float Dot(Vector2 value1, Vector2 value2)
+        {
+            return (value1.X * value2.X)
+                 + (value1.Y * value2.Y);
+        }
+
+        public override string ToString()
+        {
+            return X + ";" + Y;
         }
 
         internal static Vector2 ParseVector2(Microsoft.Xna.Framework.Vector2 vector2) { return new Vector2(vector2.X, vector2.Y); }

@@ -1,9 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-using alice.engine.graphics;
-
-namespace alice.engine.internals
+namespace alice.engine
 {
     internal static class LoadEmbeddedResources
     {

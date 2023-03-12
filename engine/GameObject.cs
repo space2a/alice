@@ -1,16 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
-
-using alice.engine.components;
-using alice.engine.graphics;
-using alice.engine.internals;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace alice.engine
 {
@@ -106,7 +95,7 @@ namespace alice.engine
             if (childrens != null)
                 foreach (var child in childrens) { child.PreDestroy(); }
 
-            SceneLoader.currentScene.gameObjects?.Remove(this);
+            SceneManager.currentScene.gameObjects?.Remove(this);
 
             if (isDisabled) return;
             OnDestroy();
@@ -174,7 +163,6 @@ namespace alice.engine
             component.gameObject = this;
             component.Start();
             components.Add(component);
-            //Console.WriteLine("new component of type " + component.GetType() + " added");
         }
 
         public void AddComponents(Component first, Component second, Component third)
@@ -209,31 +197,42 @@ namespace alice.engine
             return (T[])components.FindAll(x => x.GetType() == typeof(T)).ToArray();
         }
 
-        public alice.engine.Component[] GetComponents() 
+        public Component[] GetComponents() 
         {
             return components.ToArray();
         }
 
-        public bool RemoveComponent<Component>()
+        public bool RemoveComponent<Component>(bool destroy = false)
         {
             int index = components.FindIndex(x => x.GetType() == typeof(Component));
             if (index != -1)
             {
+                if (destroy) { components[index].Destroy(); }
                 components.RemoveAt(index);
                 return true;
             }
             else return false;
         }
 
-        public bool RemoveComponent(Component component)
+        public bool RemoveComponent(Component component, bool destroy = false)
         {
             int index = components.IndexOf(component);
             if (index != -1)
             {
+                if(destroy) { components[index].Destroy(); }
                 components.RemoveAt(index);
                 return true;
             }
             else return false;
+        }
+
+        public void RemoveAllComponent(bool destroy = false)
+        {
+            if (destroy)
+                for (int i = 0; i < components.Count; i++)
+                    components[i].Destroy();
+
+            components.Clear();
         }
     }
 

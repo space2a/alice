@@ -2,7 +2,7 @@
 
 namespace alice.engine
 {
-    public static class SceneLoader
+    public static class SceneManager
     {
         internal static List<Scene> scenes = new List<Scene>();
 

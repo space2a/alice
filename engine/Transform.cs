@@ -1,13 +1,4 @@
-﻿using alice.engine.maths;
-
-using Microsoft.Xna.Framework;
-
-using System;
-using System.Transactions;
-
-using Vector2 = alice.engine.maths.Vector2;
-
-namespace alice.engine
+﻿namespace alice.engine
 
 {
     public class Transform
@@ -37,9 +28,9 @@ namespace alice.engine
             MoveToward(transform.position, speed);
         }
 
-        public void MoveToward(maths.Vector2 position, float speed)
+        public void MoveToward(engine.Vector2 position, float speed)
         {
-            maths.Vector2 direction = position - this.position;
+            engine.Vector2 direction = position - this.position;
             direction.Normalize();
             if (!direction.isNaN())
             {

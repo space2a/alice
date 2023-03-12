@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework.Input;
 
-using alice.engine.graphics;
-using alice.engine.internals;
+using System;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-
-namespace alice.engine.uicomponents
+namespace alice.engine
 {
     public class Checkbox : UIComponent
     {
@@ -22,8 +14,8 @@ namespace alice.engine.uicomponents
         public Texture2D uncheckedTexture = LoadEmbeddedResources.LoadTexture("uncheckedbox.png", "images");
         public Texture2D checkedTexture = LoadEmbeddedResources.LoadTexture("checkedbox.png", "images");
 
-        public graphics.Color TextColor = graphics.Color.White;
-        public graphics.Color HoveringTint = graphics.Color.Gray;
+        public engine.Color TextColor = engine.Color.White;
+        public engine.Color HoveringTint = engine.Color.Gray;
 
         public bool isChecked = false;
         public int spacing = 10;
@@ -32,7 +24,7 @@ namespace alice.engine.uicomponents
 
         public Font font = FontManager.defaultFont;
 
-        private Vector2 textv2;
+        private Microsoft.Xna.Framework.Vector2 textv2;
         private string _text = "Text";
         public string text
         {
@@ -67,9 +59,9 @@ namespace alice.engine.uicomponents
             this.checkedTexture = checkedTexture;
         }
 
-        internal override Rectangle GetElementRectangle()
+        internal override Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {
-            return new Rectangle((int)transform.position.X,
+            return new Microsoft.Xna.Framework.Rectangle((int)transform.position.X,
                 (int)transform.position.Y,
                 currentTexture.texture2D.Width + (extendInteractableZoneToText == true ? spacing + (int)textv2.X : 0), currentTexture.texture2D.Height);
         }
@@ -83,13 +75,13 @@ namespace alice.engine.uicomponents
             if (isHovering) color = HoveringTint.color;
 
             spritesBatch.Draw(currentTexture.texture2D,
-                new Rectangle(elementRectangle.X, elementRectangle.Y, elementRectangle.Width - (extendInteractableZoneToText == true ? spacing + (int)textv2.X : 0), elementRectangle.Height),
+                new Microsoft.Xna.Framework.Rectangle(elementRectangle.X, elementRectangle.Y, elementRectangle.Width - (extendInteractableZoneToText == true ? spacing + (int)textv2.X : 0), elementRectangle.Height),
                 color);
 
             var x = elementRectangle.X + currentTexture.texture2D.Width + spacing;
             var y = elementRectangle.Y + elementRectangle.Height / 2 - textv2.Y / 2;
 
-            spritesBatch.DrawString(font.font, text, new Vector2(x, y), TextColor.color);
+            spritesBatch.DrawString(font.font, text, new Microsoft.Xna.Framework.Vector2(x, y), TextColor.color);
 
             base.Draw(spritesBatch);
         }

@@ -1,10 +1,4 @@
-﻿using alice.engine.maths;
-
-using Microsoft.Xna.Framework;
-
-using MonoGame.Extended.Collisions;
-
-namespace alice.engine.components
+﻿namespace alice.engine
 {
     [UniqueComponent]
     public class Rigidbody2D : Component
@@ -28,13 +22,13 @@ namespace alice.engine.components
             if (!collidingInput.inputCollider.isTrigger)
             {
                 if (bodyType == BodyType.Dynamic || bodyType == BodyType.Kinematic)
-                    transform.position -= new maths.Vector2(collidingInput.force);
+                    transform.position -= new engine.Vector2(collidingInput.force);
             } //if the other colliding object isTrigger is true this object does not react at all.
         }
 
         internal override void Update(GameTime gameTime)
         {
-            //transform.position -= new maths.Vector2(0, (gravity * (float)(gameTime.ElapsedGameTime.TotalSeconds *
+            //transform.position -= new engine.Vector2(0, (gravity * (float)(gameTime.ElapsedGameTime.TotalSeconds *
             //    (SceneLoader.currentScene.sceneCamera.boundingRectangle.Height / 10))));
         }
 

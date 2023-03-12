@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace alice.engine.graphics
+namespace alice.engine
 {
     public class Color
     {
@@ -39,16 +39,17 @@ namespace alice.engine.graphics
             return r + "," + g + "," + b + "," + a;
         }
 
-        public static Color White { get { return ColorReferences[0]; } }
-        public static Color Gray { get { return ColorReferences[1]; } }
-        public static Color Black { get { return ColorReferences[2]; } }
-        public static Color Red { get { return ColorReferences[3]; } }
-        public static Color Green { get { return ColorReferences[4]; } }
-        public static Color Blue { get { return ColorReferences[5]; } }
-        public static Color Yellow { get { return ColorReferences[6]; } }
-        public static Color Cyan { get { return ColorReferences[7]; } }
-        public static Color Magenta { get { return ColorReferences[8]; } }
-        public static Color Orange { get { return ColorReferences[9]; } }
+        public static Color Transparent { get { return ColorReferences[0]; } }
+        public static Color White { get { return ColorReferences[1]; } }
+        public static Color Gray { get { return ColorReferences[2]; } }
+        public static Color Black { get { return ColorReferences[3]; } }
+        public static Color Red { get { return ColorReferences[4]; } }
+        public static Color Green { get { return ColorReferences[5]; } }
+        public static Color Blue { get { return ColorReferences[6]; } }
+        public static Color Yellow { get { return ColorReferences[7]; } }
+        public static Color Cyan { get { return ColorReferences[8]; } }
+        public static Color Magenta { get { return ColorReferences[9]; } }
+        public static Color Orange { get { return ColorReferences[10]; } }
 
         public static Color Random
         {
@@ -61,6 +62,7 @@ namespace alice.engine.graphics
 
         private static Color[] ColorReferences = new Color[]
         {
+            new Color(0,0,0,0),
             new Color(255,255,255,255),
             new Color(128,128,128,255),
             new Color(0,0,0,255),

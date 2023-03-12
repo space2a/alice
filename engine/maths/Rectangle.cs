@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MonoGame.Extended;
 
-using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 
-using MonoGame.Extended;
-
-namespace alice.engine.maths
+namespace alice.engine
 {
     public class Rectangle
     {
 
         public int X, Y, Width, Height;
+
+        public int Left => X;
+
+        public int Right => X + Width;
+
+        public int Top => Y;
+
+        public int Bottom => Y + Height;
 
         public Rectangle(int x, int y, int width, int height)
         {
@@ -39,10 +41,18 @@ namespace alice.engine.maths
             Height = (int)rectangle.Height;
         }
 
-
         internal Microsoft.Xna.Framework.Rectangle ToXnaRectangle()
         {
             return new Microsoft.Xna.Framework.Rectangle(X, Y, Width, Height);
+        }
+
+        public bool Intersects(Rectangle rectangle)
+        {
+            if (rectangle.Left < Right && Left < rectangle.Right && rectangle.Top < Bottom)
+            {
+                return Top < rectangle.Bottom;
+            }
+            return false;
         }
 
         public int XYWH()

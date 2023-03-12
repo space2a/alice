@@ -1,13 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
 
-using alice.engine.maths;
+using System;
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-
-namespace alice.engine.graphics
+namespace alice.engine
 {
 
     public class Sprite
@@ -17,7 +12,7 @@ namespace alice.engine.graphics
 
         public Flip flip = Flip.None;
 
-        public alice.engine.maths.Vector2 origin = alice.engine.maths.Vector2.Zero;
+        public alice.engine.Vector2 origin = alice.engine.Vector2.Zero;
 
         public int layer = 0;
         internal virtual void Draw(Sprites spritesBatch, Transform transform)
@@ -34,7 +29,7 @@ namespace alice.engine.graphics
         
         public void CalculateOrigin()
         {
-            origin = new maths.Vector2(texture2D.width /2, texture2D.height /2);
+            origin = new engine.Vector2(texture2D.width /2, texture2D.height /2);
         }
 
         internal SpriteEffects GetFlip()
@@ -141,7 +136,7 @@ namespace alice.engine.graphics
         internal override void Draw(Sprites spritesBatch, Transform transform)
         {
             spritesBatch.Draw(texture2D.texture2D,
-                new Rectangle(coords[currentSpriteIndex].x, coords[currentSpriteIndex].y, slicedBy, slicedBy),
+                new Microsoft.Xna.Framework.Rectangle(coords[currentSpriteIndex].x, coords[currentSpriteIndex].y, slicedBy, slicedBy),
                 origin.ToXnaVector2(), (transform.position + texture2D.offset).ToXnaVector2(),
                 transform.rotation,
                 transform.scale.ToXnaVector2(), new Color(255, 255, 255,(byte)(opacity * 255)), GetFlip(), layer);
@@ -150,16 +145,16 @@ namespace alice.engine.graphics
 
     public class RegionSprite :Sprite
     {
-        public alice.engine.maths.Rectangle region;
+        public alice.engine.Rectangle region;
 
         public RegionSprite(Texture2D texture2D)
         {
             this.texture2D = texture2D;
-            region = new maths.Rectangle(0, 0, texture2D.width, texture2D.height);
+            region = new engine.Rectangle(0, 0, texture2D.width, texture2D.height);
             CalculateOrigin();
         }
 
-        public RegionSprite(Texture2D texture2D, alice.engine.maths.Rectangle region)
+        public RegionSprite(Texture2D texture2D, alice.engine.Rectangle region)
         {
             this.texture2D = texture2D;
             this.region = region;

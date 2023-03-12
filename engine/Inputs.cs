@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-using alice.engine.components;
-using alice.engine.maths;
+
+
 
 using Microsoft.Xna.Framework.Input;
 
@@ -383,7 +382,6 @@ namespace alice.engine
 
     public sealed class CursorContrainWindow : CursorContrainZone
     {
-
         public override Rectangle GetRectangle()
         {
             return new Rectangle(Launcher.core.Window.Position.X + (Launcher.core._graphics.PreferredBackBufferWidth / 2),

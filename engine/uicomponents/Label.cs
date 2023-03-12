@@ -1,28 +1,14 @@
-﻿using alice.engine.graphics;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
-using MonoGame.Extended;
-using MonoGame.Extended.BitmapFonts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace alice.engine.uicomponents
+﻿namespace alice.engine
 {
     public class Label : UIComponent
     {
 
         public int scale = 1;
-        public graphics.Color TextColor = graphics.Color.White;
+        public engine.Color TextColor = engine.Color.White;
 
         public Font font = FontManager.defaultFont;
 
-        private Vector2 textv2;
+        private Microsoft.Xna.Framework.Vector2 textv2;
         private string _text = "Text";
         public string text
         {
@@ -37,9 +23,9 @@ namespace alice.engine.uicomponents
             }
         }
 
-        internal override Rectangle GetElementRectangle()
+        internal override Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {
-            return new Rectangle((int)transform.position.X, (int)transform.position.Y, (int)textv2.X, (int)textv2.Y);
+            return new Microsoft.Xna.Framework.Rectangle((int)transform.position.X, (int)transform.position.Y, (int)textv2.X, (int)textv2.Y);
         }
 
         public Label(string text = null)
@@ -50,7 +36,7 @@ namespace alice.engine.uicomponents
 
         internal override void DrawUI(Sprites spritesBatch)
         {
-            spritesBatch.DrawString(font.font, text, transform.position.ToXnaVector2(), TextColor.color, 0, Vector2.Zero, scale);
+            spritesBatch.DrawString(font.font, text, transform.position.ToXnaVector2(), TextColor.color, 0, Microsoft.Xna.Framework.Vector2.Zero, scale);
 
             base.Draw(spritesBatch);
         }

@@ -2,7 +2,7 @@
 
 using System.IO;
 
-namespace alice.engine.audio
+namespace alice.engine
 {
     public class SoundEmitter
     {

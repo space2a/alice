@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using alice.engine.graphics;
-using alice.engine.maths;
-
-using Microsoft.Xna.Framework.Graphics;
-
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 
-namespace alice.engine.components
+namespace alice.engine
 {
 
     public class Collider : Component
@@ -55,7 +50,7 @@ namespace alice.engine.components
                 inputGameObject = otherCollider.gameObject,
                 inputCollider = otherCollider,
                 thisCollider = this,
-                force = new maths.Vector2(cinfo.PenetrationVector)
+                force = new engine.Vector2(cinfo.PenetrationVector)
             };
 
             rigidbody2D?.OnAnyCollision(collidingInput);
@@ -76,7 +71,6 @@ namespace alice.engine.components
 
         internal override void Update(GameTime gameTime)
         {
-
             var now = DateTime.Now;
             for (int i = 0; i < collidingWith.Count; i++)
             {
@@ -114,14 +108,14 @@ namespace alice.engine.components
 
     public class BoxCollider : Collider
     {
-        private maths.Size2 _collisionSize;
-        public maths.Size2 collisionSize
+        private engine.Size2 _collisionSize;
+        public engine.Size2 collisionSize
         {
             get { return _collisionSize; }
             set
             {
                 _collisionSize = value;
-                collisionShape = new RectangleF(new Point2(transform.position.X, transform.position.Y),
+                collisionShape = new RectangleF(new MonoGame.Extended.Point2(transform.position.X, transform.position.Y),
                     new MonoGame.Extended.Size2(value.width, value.height));
             }
         }
@@ -137,15 +131,15 @@ namespace alice.engine.components
             //colliderActor.Bounds.Position = new Point2((transform.position.X - (_collisionSize.width / 2)),
             //    (int)(transform.position.Y - (_collisionSize.height / 2)));
 
-            colliderActor.Bounds.Position = new Point2((transform.position.X),
+            colliderActor.Bounds.Position = new MonoGame.Extended.Point2((transform.position.X),
             (int)(transform.position.Y));
             base.Update(gameTime);
         }
 
         public override void RequestDefaultCollisionShape()
         {
-            collisionSize = new maths.Size2(transform.scale);
-            collisionShape = new RectangleF(new Point2(transform.position.X, transform.position.Y), new MonoGame.Extended.Size2(collisionSize.width, collisionSize.height));
+            collisionSize = new engine.Size2(transform.scale);
+            collisionShape = new RectangleF(new MonoGame.Extended.Point2(transform.position.X, transform.position.Y), new MonoGame.Extended.Size2(collisionSize.width, collisionSize.height));
         }
 
         internal override void Draw(Sprites spritesBatch)
@@ -156,7 +150,7 @@ namespace alice.engine.components
 
         internal override void DestroyComponent()
         {
-            colliderActor.Bounds.Position = new Point2(-100000, 0);
+            colliderActor.Bounds.Position = new MonoGame.Extended.Point2(-100000, 0);
         }
     }
 
@@ -170,7 +164,7 @@ namespace alice.engine.components
             {
                 _collisionSize = value;
                 if(transform != null)
-                    collisionShape = new CircleF(new Point2(transform.position.X, transform.position.Y), collisionSize);
+                    collisionShape = new CircleF(new MonoGame.Extended.Point2(transform.position.X, transform.position.Y), collisionSize);
             }
         }
         public CircleCollider() { }
@@ -182,7 +176,7 @@ namespace alice.engine.components
         internal override void Update(GameTime gameTime)
         {
             colliderActor.Bounds.Position =
-                new Point2(transform.position.X, transform.position.Y);
+                new MonoGame.Extended.Point2(transform.position.X, transform.position.Y);
             base.Update(gameTime);
         }
 
@@ -190,7 +184,7 @@ namespace alice.engine.components
         {
             collisionSize = _collisionSize;
             collisionShape = new CircleF(
-                new Point2(transform.position.X, transform.position.Y)
+                new MonoGame.Extended.Point2(transform.position.X, transform.position.Y)
                 , 100);
         }
 
@@ -201,7 +195,7 @@ namespace alice.engine.components
 
         internal override void DestroyComponent()
         {
-            colliderActor.Bounds.Position = new Point2(-100000, 0);
+            colliderActor.Bounds.Position = new MonoGame.Extended.Point2(-100000, 0);
         }
 
     }

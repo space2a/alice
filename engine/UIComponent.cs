@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using alice.engine.graphics;
-
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Extended;
 
 namespace alice.engine
@@ -34,8 +28,8 @@ namespace alice.engine
 
         internal bool scissorsElementRectangle = false;
 
-        internal static Rectangle worldMouseRectangle;
-        internal static Rectangle windowMouseRectangle;
+        internal static Microsoft.Xna.Framework.Rectangle worldMouseRectangle;
+        internal static Microsoft.Xna.Framework.Rectangle windowMouseRectangle;
         internal static UIComponent hoveringUIComponent = null;
 
         private Microsoft.Xna.Framework.Input.MouseState currentMouseState;
@@ -43,7 +37,7 @@ namespace alice.engine
 
         public bool debugDrawElementRectangle = false;
 
-        internal Rectangle ElementRectangle
+        internal Microsoft.Xna.Framework.Rectangle ElementRectangle
         {
             get
             {
@@ -52,11 +46,11 @@ namespace alice.engine
         }
 
 
-        public alice.engine.maths.Rectangle elementRectangle
+        public alice.engine.Rectangle elementRectangle
         {
             get
             {
-                return new maths.Rectangle(GetElementRectangle());
+                return new engine.Rectangle(GetElementRectangle());
             }
         }
 
@@ -126,12 +120,12 @@ namespace alice.engine
         {
             var elementRectangle = ElementRectangle;
             if (isSelected)
-                spritesBatch.shapes.DrawCircleOutline(new CircleF(new Point2(transform.position.X, transform.position.Y), 20), graphics.Color.Cyan, 10);
+                spritesBatch.shapes.DrawCircleOutline(new CircleF(new MonoGame.Extended.Point2(transform.position.X, transform.position.Y), 20), engine.Color.Cyan, 10);
             else
-                spritesBatch.shapes.DrawCircleOutline(new CircleF(new Point2(transform.position.X, transform.position.Y), 20), graphics.Color.Red, 10);
+                spritesBatch.shapes.DrawCircleOutline(new CircleF(new MonoGame.Extended.Point2(transform.position.X, transform.position.Y), 20), engine.Color.Red, 10);
 
             if (debugDrawElementRectangle)
-                spritesBatch.shapes.DrawRectangleOutline(elementRectangle, graphics.Color.Magenta, 10);
+                spritesBatch.shapes.DrawRectangleOutline(elementRectangle, engine.Color.Magenta, 10);
 
             if (scissorsElementRectangle)
             {
@@ -151,9 +145,9 @@ namespace alice.engine
 
         }
 
-        internal virtual Rectangle GetElementRectangle()
+        internal virtual Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {
-            return new Rectangle(0, 0, 10, 10);
+            return new Microsoft.Xna.Framework.Rectangle(0, 0, 10, 10);
         }
     }
 }

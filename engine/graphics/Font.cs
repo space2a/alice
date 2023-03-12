@@ -1,4 +1,4 @@
-﻿using alice.engine.maths;
+﻿
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,7 +7,7 @@ using SpriteFontPlus;
 using System;
 using System.IO;
 
-namespace alice.engine.graphics
+namespace alice.engine
 {
     public class Font
     {

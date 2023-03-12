@@ -2,9 +2,7 @@
 using System.Text;
 
 using alice.engine;
-using alice.engine.components;
-using alice.engine.graphics;
-using alice.engine.internals;
+using alice.engine.tools;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -19,7 +17,6 @@ namespace alice
 {
     internal class Core : Game
     {
-
         internal CollisionComponent _collisionComponent;
 
         internal GraphicsDeviceManager _graphics;
@@ -27,7 +24,6 @@ namespace alice
         internal Sprites spritesBatch;
 
         internal bool loadingScene = true;
-        private bool isInitialized = false;
 
         public Scene loadedScene;
 
@@ -43,9 +39,10 @@ namespace alice
                     return noCameraCam;
                 else if (loadedScene.sceneCamera != null)
                     return loadedScene.sceneCamera;
-                else if (SceneLoader.loadingScene != null && SceneLoader.loadingScene.sceneCamera != null && loadingScene)
-                    return SceneLoader.loadingScene.sceneCamera;
-                return noCameraCam;
+                else if (SceneManager.loadingScene != null && SceneManager.loadingScene.sceneCamera != null && loadingScene)
+                    return SceneManager.loadingScene.sceneCamera;
+                else
+                    return noCameraCam;
             }
         }
 
@@ -57,7 +54,6 @@ namespace alice
             Content.RootDirectory = "Content";
 
             IsMouseVisible = true;
-            IsFixedTimeStep = true;
 
             CreateCollisionComponent();
 
@@ -86,15 +82,14 @@ namespace alice
             _graphics.PreferredBackBufferHeight = (int)windowProfile.windowResolution.height;
             _graphics.ApplyChanges();
 
-            //viewportAdapter = new BoxingViewportAdapter
-            //    (Window, GraphicsDevice,
-            //    (int)windowProfile.renderedResolution.X, 
-            //    (int)windowProfile.renderedResolution.Y);
-            //
             Window.AllowAltF4 = windowProfile.authorizeALTF4;
             Window.AllowUserResizing = windowProfile.authorizeResizing;
             Window.AllowUserResizing = true;
+            Window.Title = windowProfile.windowTitle;
+            Window.IsBorderless = windowProfile.windowState == WindowProfile.WindowState.Borderless;
 
+            _graphics.SynchronizeWithVerticalRetrace = true;
+            IsFixedTimeStep = false;
 
             screen = new Screen(windowProfile.renderedResolution.width, windowProfile.renderedResolution.height);
 
@@ -102,60 +97,7 @@ namespace alice
 
             noCameraCam = new Camera();
 
-            isInitialized = true;
             base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            if (Launcher.coreState != Launcher.CoreState.Playing) return;
-
-            var gt = new engine.GameTime(gameTime);
-            Camera cam = getMainCamera;
-
-            if (debuggingEnabled)
-                Debugging();
-
-            Inputs.Update();
-            Inputs.MouseState.UpdateScreenPosition(screen, cam);
-
-            try
-            {
-                _collisionComponent.Update(gameTime); //update the collision.
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("collision engine bug");
-            }
-
-            if (loadedScene == null && SceneLoader.loadingScene != null)
-            {
-                CallStartsIfNeeded(SceneLoader.loadingScene);
-                CallUpdates(gt, cam, SceneLoader.loadingScene);
-                base.Update(gameTime); return;
-            }
-
-            if (loadingScene) return;
-
-            CallStartsIfNeeded(loadedScene);
-
-            CallUpdates(gt, cam, loadedScene);
-
-            base.Update(gameTime);
-        }
-
-
-        private void CallUpdates(engine.GameTime gt, Camera cam, Scene scene)
-        {
-            for (int i = 0; i < scene.gameObjects.Count; i++)
-                scene.gameObjects[i].PreUpdate(gt);
-
-            cam.canvas?.CallUpdate(gt);
         }
 
         private void CallStartsIfNeeded(Scene scene)
@@ -170,51 +112,55 @@ namespace alice
             }
         }
 
+        private void CallUpdates(engine.GameTime gt, Camera cam, Scene scene)
+        {
+            for (int i = 0; i < scene.gameObjects.Count; i++)
+                scene.gameObjects[i].PreUpdate(gt);
 
-        protected override void Draw(GameTime gameTime)
+            cam.canvas?.CallUpdate(gt);
+        }
+
+        protected override void Update(GameTime gameTime)
         {
             if (Launcher.coreState != Launcher.CoreState.Playing) return;
 
-            Scene currentScene = null;
-            StartDrawBatchs(out Camera cam);
+            var gt = new engine.GameTime(gameTime);
+            Camera cam = getMainCamera;
 
-            if (cam == noCameraCam && loadedScene != null)
-            { ScreenErrors.NoMainCamera(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
-            
-            if (loadingScene || !loadedScene.startedCalled)
+            Inputs.Update();
+            Inputs.MouseState.UpdateScreenPosition(screen, cam);
+
+            try
             {
-                if (SceneLoader.loadingScene != null)
-                    CallDraws(spritesBatch, SceneLoader.loadingScene, out currentScene); else ScreenErrors.LoadingSceneNull(spritesBatch);
+                _collisionComponent.Update(gameTime); //update the collision.
             }
-            else if (loadedScene != null && loadedScene.startedCalled) 
-                CallDraws(spritesBatch, loadedScene, out currentScene);
+            catch (Exception)
+            {
+                Console.WriteLine("collision engine bug");
+            }
 
-            
+            if (loadedScene == null && SceneManager.loadingScene != null)
+            {
+                CallStartsIfNeeded(SceneManager.loadingScene);
+                CallUpdates(gt, cam, SceneManager.loadingScene);
+                base.Update(gameTime); return;
+            }
 
-            //spritesBatch.shapes.DrawRectangleOutline(windowProfile.boundingRectangle.ToXnaRectangle(), new engine.graphics.Color(255, 0, 0, 1), 5);
-            //spritesBatch.shapes.DrawRectangleOutline(cam.XNABoundingRectangle, new engine.graphics.Color(0, 255, 0, 1), 10);
-            
-            //spritesBatch.shapes.DrawFilledRectangle(UIComponent.worldMouseRectangle, alice.engine.graphics.Color.Random);
+            if (loadingScene) return;
 
-            //spritesBatch.shapes.DrawFilledRectangleGradient(UIComponent.worldMouseRectangle, new Gradient(
-                //alice.engine.graphics.Color.Random, alice.engine.graphics.Color.Random, alice.engine.graphics.Color.Random, alice.engine.graphics.Color.Random));
+            CallStartsIfNeeded(loadedScene);
 
-            //spritesBatch.shapes.DrawRectangleOutline(new Rectangle((windowProfile.renderedResolution.width * 10) /2 * -1,
-                //(windowProfile.renderedResolution.height * 10) /2 * -1,
-                //windowProfile.renderedResolution.width * 10,
-                //windowProfile.renderedResolution.height * 10),
-                //new engine.graphics.Color(30, 200, 200, 20), 10);
+            CallUpdates(gt, cam, loadedScene);
 
-            EndDrawBatchs(currentScene, cam);
-
-            base.Draw(gameTime);
+            base.Update(gameTime);
         }
 
         private void CallDraws(Sprites spritesBatch, Scene scene, out Scene currentScene)
         {
             currentScene = scene;
             for (int i = 0; i < scene.gameObjects.Count; i++)
-            {                scene.gameObjects[i].Draw(spritesBatch);
+            {                
+                scene.gameObjects[i].Draw(spritesBatch);
             }
         }
 
@@ -240,13 +186,35 @@ namespace alice
             spritesBatch.shapes.Begin(cam);
         }
 
+
+
+        protected override void Draw(GameTime gameTime)
+        {
+            if (Launcher.coreState != Launcher.CoreState.Playing) return;
+
+            Scene currentScene = null;
+            StartDrawBatchs(out Camera cam);
+
+            if (cam == noCameraCam && loadedScene != null)
+            { ScreenErrors.NoMainCamera(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
+
+            if (loadingScene || !loadedScene.startedCalled)
+            {
+                if (SceneManager.loadingScene != null)
+                    CallDraws(spritesBatch, SceneManager.loadingScene, out currentScene);
+                else { ScreenErrors.LoadingSceneNull(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
+            }
+            else if (loadedScene != null && loadedScene.startedCalled)
+                CallDraws(spritesBatch, loadedScene, out currentScene);
+
+            EndDrawBatchs(currentScene, cam);
+
+            base.Draw(gameTime);
+        }
+
         private void EndDrawBatchs(Scene scene, Camera cam)
         {
-            //Console.ForegroundColor = ConsoleColor.Red;
-            //Console.WriteLine("END BATCH");
-            //Console.ResetColor();
-
-            engine.debugging.Debugging.Draw(spritesBatch);
+            engine.Debugging.Draw(spritesBatch);
             spritesBatch.End();
 
             //draws UIs
@@ -276,10 +244,6 @@ namespace alice
                 loadedScene.Destroy();
 
             loadedScene = null;
-            //Content.Unload();
-
-            //if (_spriteBatch != null)
-            //    _spriteBatch.Dispose();
 
 
             if (scene == null) { throw new Exception("no scene to load content from."); }
@@ -292,11 +256,12 @@ namespace alice
         public void LoadLoadingScene(Scene loadingScene)
         {
             LoadContent();
-            if (SceneLoader.loadingScene != null)
-                SceneLoader.loadingScene.Destroy();
 
-            SceneLoader.loadingScene = loadingScene;
-            SceneLoader.loadingScene.OnCreation();
+            if (SceneManager.loadingScene != null)
+                SceneManager.loadingScene.Destroy();
+
+            SceneManager.loadingScene = loadingScene;
+            SceneManager.loadingScene.OnCreation();
 
         }
 
@@ -305,110 +270,6 @@ namespace alice
             _collisionComponent = new CollisionComponent(
                 new RectangleF((windowProfile.renderedResolution.width * 10) /2 * -1, (windowProfile.renderedResolution.height * 10) /2 * -1,
                 windowProfile.renderedResolution.width * 10, windowProfile.renderedResolution.height * 10));
-        }
-
-        private int deltaScrollWheelValue = 0;
-        private int currentScrollWheelValue = 0;
-        private bool debuggingEnabled = true;
-        private void Debugging()
-        {
-            Camera cam = getMainCamera;
-            var keyboardState = Keyboard.GetState();
-            var mouseState = Mouse.GetState();
-
-            deltaScrollWheelValue = mouseState.ScrollWheelValue - currentScrollWheelValue;
-            currentScrollWheelValue += deltaScrollWheelValue;
-
-            if (keyboardState.IsKeyDown(Keys.LeftAlt))
-            {
-                //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
-                //    Exit();
-                //
-                if (keyboardState.IsKeyDown(Keys.W))
-                {
-                    cam.Move(alice.engine.maths.Vector2.Up * 5);
-                    Inputs.KeyboardState.SetBusyForXCycle(2);
-                }
-                if (keyboardState.IsKeyDown(Keys.S))
-                {
-                    cam.Move(alice.engine.maths.Vector2.Down * 5);
-                    Inputs.KeyboardState.SetBusyForXCycle(2);
-                }
-                if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    cam.Move(alice.engine.maths.Vector2.Left * 5);
-                    Inputs.KeyboardState.SetBusyForXCycle(2);
-                }
-                if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    cam.Move(alice.engine.maths.Vector2.Right * 5);
-                    Inputs.KeyboardState.SetBusyForXCycle(2);
-                }
-
-                //if (keyboardState.IsKeyDown(Keys.Up))
-                //{
-                    //cam.rotation = new Vector3(cam.rotation.X, cam.rotation.Y += 50, cam.rotation.Z);
-                    //Console.WriteLine(cam.rotation);
-                //}
-
-                //if (keyboardState.IsKeyDown(Keys.Down))
-                //{
-                    //cam.rotation = new Vector3(cam.rotation.X, cam.rotation.Y -= 50, cam.rotation.Z);
-                    //Console.WriteLine(cam.rotation);
-                //}
-
-                //if (keyboardState.IsKeyDown(Keys.Left))
-                //{
-                    //cam.rotation = new Vector3(cam.rotation.X -= 50, cam.rotation.Y, cam.rotation.Z);
-                    //Console.WriteLine(cam.rotation);
-                //}
-                //if (keyboardState.IsKeyDown(Keys.Right))
-                //{
-                    //cam.rotation = new Vector3(cam.rotation.X += 50, cam.rotation.Y, cam.rotation.Z);
-                    //Console.WriteLine(cam.rotation);
-                //}
-
-                //if (keyboardState.IsKeyDown(Keys.X))
-                //{
-                    //cam.rotation = new Vector3(cam.rotation.X, cam.rotation.Y, cam.rotation.Z += 50);
-                    //Console.WriteLine(cam.rotation);
-                //}
-                //if (keyboardState.IsKeyDown(Keys.C))
-                //{
-                    //cam.rotation = new Vector3(cam.rotation.X, cam.rotation.Y, cam.rotation.Z -= 50);
-                    //Console.WriteLine(cam.rotation);
-                //}
-
-
-                if (keyboardState.IsKeyDown(Keys.V))
-                {
-                    cam.z -= 20;
-                }
-
-
-                if (keyboardState.IsKeyDown(Keys.B))
-                {
-                    cam.z += 20;
-                }
-
-
-
-                //
-                if (deltaScrollWheelValue > 0) cam.ZoomIn();
-                else if (deltaScrollWheelValue < 0) cam.ZoomOut();
-
-                //if (keyboardState.IsKeyDown(Keys.Delete))
-                //{
-                //    _camera.Zoom = 1;
-                //    _camera.Position = Vector2.Zero;
-                //    Inputs.KeyboardState.SetBusyForXCycle(2);
-                //    loadedScene.scenery.clearingColor = alice.engine.Color.Random;
-                //}
-                //else if (keyboardState.IsKeyDown(Keys.Up))
-                //{
-                //    Inputs.KeyboardState.SetBusyForXCycle(2);
-                //}
-            }
         }
     }
 

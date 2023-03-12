@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using alice.engine;
-using alice.engine.maths;
+
 
 using Microsoft.Xna.Framework;
 
-using Newtonsoft.Json.Linq;
-
-using Point = alice.engine.maths.Point;
-using Rectangle = alice.engine.maths.Rectangle;
-using Vector2 = alice.engine.maths.Vector2;
+using Point = alice.engine.Point;
+using Rectangle = alice.engine.Rectangle;
+using Vector2 = alice.engine.Vector2;
 
 namespace alice
 {
@@ -121,7 +115,7 @@ namespace alice
             }
         }
 
-        public Point startPositionManual = new engine.maths.Point(0, 0);
+        public Point startPositionManual = new engine.Point(0, 0);
 
         private Size2 oldWindowResolution;
 
@@ -213,14 +207,16 @@ namespace alice
                     break;
                 case WindowState.Fullscreen:
                     Launcher.core.Window.IsBorderless = false;
+                    Launcher.core._graphics.HardwareModeSwitch = true;
                     Launcher.core._graphics.IsFullScreen = true;
                     break;
                 case WindowState.Borderless:
                     Launcher.core.Window.IsBorderless = true;
-                    Launcher.core._graphics.IsFullScreen = false;
+                    Launcher.core._graphics.ToggleFullScreen();
                     break;
                 case WindowState.FullscreenBorderless:
                     Launcher.core.Window.IsBorderless = true;
+                    Launcher.core._graphics.HardwareModeSwitch = false;
                     Launcher.core._graphics.IsFullScreen = true;
                     break;
             }

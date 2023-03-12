@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using alice.engine.components;
-using alice.engine.graphics;
-using Newtonsoft.Json;
 
 namespace alice.engine
 {
@@ -45,7 +42,6 @@ namespace alice.engine
             }).Start();
         }
 
-
         public void AddGameObject(GameObject gameObject)
         {
             gameObjects.Add(gameObject);
@@ -68,10 +64,10 @@ namespace alice.engine
 
         public bool CreateScene(string sceneName)
         {
-            if (SceneLoader.scenes.FindIndex(x => x.sceneName == sceneName) != -1)
+            if (SceneManager.scenes.FindIndex(x => x.sceneName == sceneName) != -1)
             { throw new Exception("A scene with the same name already exists."); }
             this.sceneName = sceneName;
-            SceneLoader.scenes.Add(this);
+            SceneManager.scenes.Add(this);
             Console.WriteLine("new scene..." + sceneName);
             return true;
         }
@@ -103,7 +99,7 @@ namespace alice.engine
                     gameObjects[i].PreDestroy();
 
             Console.WriteLine("scene destroy function");
-            SceneLoader.scenes.Remove(this);
+            SceneManager.scenes.Remove(this);
         }
     }
 }

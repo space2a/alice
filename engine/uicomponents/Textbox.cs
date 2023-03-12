@@ -1,16 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 
-using alice.engine.graphics;
-using alice.engine.internals;
-using alice.engine.maths;
+using System;
 
-using Microsoft.Xna.Framework;
-
-using Color = alice.engine.graphics.Color;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
-
-namespace alice.engine.uicomponents
+namespace alice.engine
 {
     public class Textbox : UIComponent
     {
@@ -58,15 +50,15 @@ namespace alice.engine.uicomponents
 
         public bool isSelecting { get; private set; }
 
-        private Vector2 textv2;
-        private Vector2 caretv2;
+        private Microsoft.Xna.Framework.Vector2 textv2;
+        private Microsoft.Xna.Framework.Vector2 caretv2;
         private string _text = "Textbox";
 
         private bool drawCaret = true;
         private bool _isCaretBlinking = true;
 
         private int startSelectionIndex = 0;
-        private Vector2 startSelectionIndexv2;
+        private Microsoft.Xna.Framework.Vector2 startSelectionIndexv2;
 
         private bool isHoldingShift = false;
 
@@ -257,24 +249,24 @@ namespace alice.engine.uicomponents
             }
 
             spritesBatch.DrawString(font.font, DrawText(),
-                new Vector2(elementRectangle.X, y),
+                new Microsoft.Xna.Framework.Vector2(elementRectangle.X, y),
                 textColor.color); //need scaling
 
             //caret
             if (drawCaret && showCaret && isSelected)
             {
                 spritesBatch.shapes.DrawFilledRectangle(
-                new Rectangle(elementRectangle.X + (int)caretv2.X,
+                new Microsoft.Xna.Framework.Rectangle(elementRectangle.X + (int)caretv2.X,
                 (int)y, caretWidth, (int)(elementRectangle.Height / 1.5)), caretColor);
             }
 
             //selection
             if (isSelecting)
             {
-                Rectangle selectionRectangle = new Rectangle();
+                Microsoft.Xna.Framework.Rectangle selectionRectangle = new Microsoft.Xna.Framework.Rectangle();
                 if (caretIndex > startSelectionIndex)
                 {
-                    selectionRectangle = new Rectangle(
+                    selectionRectangle = new Microsoft.Xna.Framework.Rectangle(
                     elementRectangle.X + (int)startSelectionIndexv2.X,
                     (int)y,
                     (int)(caretv2.X - startSelectionIndexv2.X),
@@ -283,7 +275,7 @@ namespace alice.engine.uicomponents
 
                 else if (caretIndex < startSelectionIndex)
                 {
-                    selectionRectangle = new Rectangle(
+                    selectionRectangle = new Microsoft.Xna.Framework.Rectangle(
                     elementRectangle.X + (int)caretv2.X,
                     (int)y,
                     (int)(startSelectionIndexv2.X - caretv2.X),
@@ -328,7 +320,7 @@ namespace alice.engine.uicomponents
             for (int i = 0; i < text.Length; i++)
             {
                 var v2 = font.GetLetterVector2(text[i]);
-                Rectangle rectangle = new Rectangle(
+                Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle(
                     elementRectangle.X + x,
                     (int)y,
                     (int)v2.X / 2,
@@ -336,7 +328,7 @@ namespace alice.engine.uicomponents
 
                 x += (int)v2.X / 2;
 
-                Rectangle rectangle2 = new Rectangle(
+                Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle(
                 elementRectangle.X + x,
                 (int)y,
                 (int)v2.X / 2,
@@ -344,7 +336,7 @@ namespace alice.engine.uicomponents
 
                 x += (int)v2.X / 2;
 
-                Rectangle mouseRectangle = new Rectangle();
+                Microsoft.Xna.Framework.Rectangle mouseRectangle = new Microsoft.Xna.Framework.Rectangle();
                 if (gameObject.isInCanvas) mouseRectangle = windowMouseRectangle;
                 else mouseRectangle = worldMouseRectangle;
 
@@ -416,9 +408,9 @@ namespace alice.engine.uicomponents
         }
 
 
-        internal override Rectangle GetElementRectangle()
+        internal override Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {
-            return new Rectangle(
+            return new Microsoft.Xna.Framework.Rectangle(
                 (int)transform.position.X,
                 (int)transform.position.Y,
                 baseSize.width * (int)transform.scale.X,

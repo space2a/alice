@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using MonoGame.Extended;
+using MonoGame.Extended.Serialization;
 
-using alice.engine.graphics;
-using alice.engine.maths;
+using System.Collections.Generic;
 
-namespace alice.engine.debugging
+namespace alice.engine
 {
     public static class Debugging
     {
         public static List<DrawingObject> drawingObjects = new List<DrawingObject>();
-        public static List<DrawingObject> drawingObjectsUI = new List<DrawingObject>();
 
         private static Sprites spriteBatch
         {
@@ -18,48 +17,102 @@ namespace alice.engine.debugging
             }
         }
 
-        public static void DrawRectangle(Rectangle rectangle, Color color)
+        public static void AddDrawingObject(DrawingObject drawingObject)
         {
-            drawingObjects.Add(new DrawingObject(rectangle, color));
+            drawingObjects.Add(drawingObject);
         }
 
-        public static void DrawRectangleUI(Rectangle rectangle, Color color)
+        public static void RemoveDrawingObject(DrawingObject drawingObject)
         {
-            drawingObjectsUI.Add(new DrawingObject(rectangle, color));
+            drawingObjects.Remove(drawingObject);
         }
-
 
         internal static void Draw(Sprites spriteBatch)
         {
-            for (int i = 0; i < drawingObjects.Count; i++)
-            {
-                spriteBatch.shapes.DrawRectangleOutline(drawingObjects[i].rect, drawingObjects[i].color, 10);
-                drawingObjects.RemoveAt(i);
-            }
+            CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.Base), spriteBatch);
         }
+
 
         internal static void DrawUI(Sprites spriteBatch)
         {
-            for (int i = 0; i < drawingObjectsUI.Count; i++)
+            CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.UI), spriteBatch);
+        }
+
+        private static void CallDraws(List<DrawingObject> drawingObjects, Sprites spriteBatch) 
+        {
+            for (int i = 0; i < drawingObjects.Count; i++)
             {
-                spriteBatch.shapes.DrawFilledRectangle(drawingObjectsUI[i].rect, drawingObjectsUI[i].color);
-                drawingObjectsUI.RemoveAt(i);
+                drawingObjects[i].Draw();
+                if (!drawingObjects[i].persistent)
+                    drawingObjects.RemoveAt(i);
             }
         }
 
     }
 
-    public class DrawingObject
+    public abstract class DrawingObject
     {
-        public Microsoft.Xna.Framework.Rectangle rect;
+        public bool persistent = false;
+
         public Color color;
 
-        public DrawingObject(Rectangle rect, Color color)
+        public DrawLevel drawLevel;
+        internal static Sprites spriteBatch
         {
-            if (rect == null) rect = new Rectangle(0, 0, 0, 0);
-            this.rect = rect.ToXnaRectangle();
+            get
+            {
+                return Launcher.core.spritesBatch;
+            }
+        }
+
+        public enum DrawLevel
+        {
+            Base,
+            UI
+        }
+
+        public DrawingObject(Color color, DrawLevel drawLevel, bool persistent = false)
+        {
             this.color = color;
+            this.drawLevel = drawLevel;
+            this.persistent = persistent;
+        }
+
+        internal virtual void Draw() { }
+    }
+
+    public class DrawingObjectRectangle : DrawingObject
+    {
+        private Microsoft.Xna.Framework.Rectangle rectangle;
+        private bool isFiled = false;
+        private int thickness;
+
+        public DrawingObjectRectangle(engine.Rectangle rectangle, bool filled, int thickness, Color color, DrawLevel drawLevel, bool persistent = false) : base(color, drawLevel, persistent)
+        { this.rectangle = rectangle.ToXnaRectangle(); this.isFiled = filled; this.thickness = thickness; }
+
+        internal override void Draw()
+        {
+            if (isFiled)
+                spriteBatch.shapes.DrawFilledRectangle(rectangle, color);
+            else
+                spriteBatch.shapes.DrawRectangleOutline(rectangle, color, thickness);
         }
     }
+
+    public class DrawingObjectCircle : DrawingObject
+    {
+        public Circle circle;
+
+        private int thickness;
+
+        public DrawingObjectCircle(engine.Circle circle, Color color, int thickness, DrawLevel drawLevel, bool persistent = false) : base(color, drawLevel, persistent)
+        { this.circle = circle; this.thickness = thickness; }
+
+        internal override void Draw()
+        {
+            spriteBatch.shapes.DrawCircleOutline(circle.ToCircleF(), color, thickness);
+        }
+    }
+
 
 }

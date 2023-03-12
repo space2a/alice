@@ -1,14 +1,4 @@
-﻿using System;
-
-using alice.engine.graphics;
-using alice.engine.internals;
-
-using Microsoft.Xna.Framework;
-
-using Color = alice.engine.graphics.Color;
-using Texture2D = alice.engine.graphics.Texture2D;
-
-namespace alice.engine.uicomponents
+﻿namespace alice.engine
 {
     public class Button : UIComponent
     {
@@ -24,7 +14,7 @@ namespace alice.engine.uicomponents
         public bool useShape = false;
         public Font font = FontManager.defaultFont;
 
-        private Vector2 textv2;
+        private Microsoft.Xna.Framework.Vector2 textv2;
         private string _text = "Button";
         public string text
         {
@@ -86,22 +76,22 @@ namespace alice.engine.uicomponents
             float x = elementRectangle.X + elementRectangle.Width / 2 - textv2.X / 2;
             float y = elementRectangle.Y + elementRectangle.Height / 2 - textv2.Y / 2;
 
-            spritesBatch.DrawString(font.font, text, new Vector2(x, y), textColor.color);
+            spritesBatch.DrawString(font.font, text, new Microsoft.Xna.Framework.Vector2(x, y), textColor.color);
 
             spritesBatch.shapes.DrawRectangleOutline(elementRectangle, new Color(255, 0, 255, 100), 10);
         }
 
-        internal override Rectangle GetElementRectangle()
+        internal override Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {
             if (resizeTextureToTextLength)
             {
-                return new Rectangle((int)transform.position.X,
+                return new Microsoft.Xna.Framework.Rectangle((int)transform.position.X,
                 (int)transform.position.Y,
                 buttonTexture.texture2D.Width + (int)textv2.X, buttonTexture.texture2D.Height);
             }
             else
             {
-                return new Rectangle((int)transform.position.X,
+                return new Microsoft.Xna.Framework.Rectangle((int)transform.position.X,
                 (int)transform.position.Y,
                 buttonTexture.texture2D.Width, buttonTexture.texture2D.Height);
             }

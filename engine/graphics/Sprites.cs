@@ -1,25 +1,10 @@
-﻿using alice.engine.components;
-using alice.engine.maths;
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
-using Texture2D = Microsoft.Xna.Framework.Graphics.Texture2D;
-using MonoGame.Extended;
-using System.Reflection.Metadata.Ecma335;
-using System.Drawing;
-using Microsoft.Xna.Framework.Input;
 
-namespace alice.engine.graphics
+namespace alice.engine
 {
     internal class Sprites : IDisposable
     {
@@ -35,8 +20,7 @@ namespace alice.engine.graphics
         public Camera camera;
 
         public RasterizerState rasterizerStateEmpty = new RasterizerState() { CullMode = CullMode.None };
-        public RasterizerState rasterizerState = new RasterizerState()
-        { MultiSampleAntiAlias = false, ScissorTestEnable = true, CullMode = CullMode.None };
+        public RasterizerState rasterizerState = new RasterizerState() { MultiSampleAntiAlias = false, ScissorTestEnable = true, CullMode = CullMode.None };
 
         public Sprites(Core core)
         {
@@ -94,6 +78,7 @@ namespace alice.engine.graphics
 
             if (unset)
             {
+                return;
                 deltaScrollWheelValue = Inputs.MouseState.currentState.ScrollWheelValue - currentScrollWheelValue;
                 currentScrollWheelValue += deltaScrollWheelValue;
 
@@ -120,39 +105,39 @@ namespace alice.engine.graphics
             sprites.Begin(rasterizerState: rasterizerState, effect: basicEffect, sortMode: SpriteSortMode.Immediate);
         }
 
-        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Vector2 origin, Vector2 position, Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
+        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Microsoft.Xna.Framework.Vector2 origin, Microsoft.Xna.Framework.Vector2 position, Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
         {
             sprites.Draw(texture2D, position, null, color.color, 0f, origin, 1f, flip, layer);
         }
 
-        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Rectangle? sourceRectangle, Vector2 origin, Vector2 position, float rotation, Vector2 scale, Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
+        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Microsoft.Xna.Framework.Rectangle? sourceRectangle, Microsoft.Xna.Framework.Vector2 origin, Microsoft.Xna.Framework.Vector2 position, float rotation, Microsoft.Xna.Framework.Vector2 scale, Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
         {
             sprites.Draw(texture2D, position, sourceRectangle, color.color, rotation, origin, scale, flip, layer);
         }
 
-        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Rectangle? sourceRectangle, Rectangle destinationRectangle, Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
+        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Microsoft.Xna.Framework.Rectangle? sourceRectangle, Microsoft.Xna.Framework.Rectangle destinationRectangle, Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
         {
-            sprites.Draw(texture2D, destinationRectangle, sourceRectangle, color.color, 0f, Vector2.Zero, flip, layer);
+            sprites.Draw(texture2D, destinationRectangle, sourceRectangle, color.color, 0f, Microsoft.Xna.Framework.Vector2.Zero, flip, layer);
         }
 
-        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Rectangle destinationRectangle, Microsoft.Xna.Framework.Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
+        public void Draw(Microsoft.Xna.Framework.Graphics.Texture2D texture2D, Microsoft.Xna.Framework.Rectangle destinationRectangle, Microsoft.Xna.Framework.Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
         {
-            sprites.Draw(texture2D, destinationRectangle, null, color, 0, Vector2.Zero, flip, layer);
+            sprites.Draw(texture2D, destinationRectangle, null, color, 0, Microsoft.Xna.Framework.Vector2.Zero, flip, layer);
         }
 
-        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Microsoft.Xna.Framework.Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0, float scale = 1)
+        public void DrawString(SpriteFont spriteFont, string text, Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0, float scale = 1)
         {
-            sprites.DrawString(spriteFont, text, position, color, 0, Vector2.Zero, scale, flip, layer);
+            sprites.DrawString(spriteFont, text, position, color, 0, Microsoft.Xna.Framework.Vector2.Zero, scale, flip, layer);
         }
 
-        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Microsoft.Xna.Framework.Color color, float rotation, Vector2 origin, float scale, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
+        public void DrawString(SpriteFont spriteFont, string text, Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Color color, float rotation, Microsoft.Xna.Framework.Vector2 origin, float scale, SpriteEffects flip = SpriteEffects.FlipVertically, int layer = 0)
         {
             sprites.DrawString(spriteFont, text, position, color, rotation, origin, scale, flip, layer);
         }
 
-        public void SetScissorRectangle(Rectangle rect)
+        public void SetScissorRectangle(Microsoft.Xna.Framework.Rectangle rect)
         {
-            Rectangle r = new Rectangle(
+            Microsoft.Xna.Framework.Rectangle r = new Microsoft.Xna.Framework.Rectangle(
                 rect.X, core.windowProfile.renderedResolution.height - rect.Y - rect.Height,
                 rect.Width, rect.Height);
 
@@ -161,7 +146,7 @@ namespace alice.engine.graphics
 
         public void ResetScissorRectangle()
         {
-            core.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, core.GraphicsDevice.Viewport.Width, core.GraphicsDevice.Viewport.Height);
+            core.GraphicsDevice.ScissorRectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, core.GraphicsDevice.Viewport.Width, core.GraphicsDevice.Viewport.Height);
         }
 
         public void End()

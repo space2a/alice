@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace alice.engine.internals
+namespace alice.engine
 {
     public static class Utils
     {
@@ -25,6 +22,20 @@ namespace alice.engine.internals
             }
 
             return result;
+        }
+
+        public static T GetItem<T>(T[] array, int index)
+        {
+            if (index >= array.Length) return array[index %  array.Length];
+            else if (index < 0) return array[index % array.Length + array.Length];
+            else return array[index];
+        }
+
+        public static T GetItem<T>(List<T> list, int index)
+        {
+            if (index >= list.Count) return list[index %  list.Count];
+            else if (index < 0) return list[index % list.Count + list.Count];
+            else return list[index];
         }
 
     }

@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
-using Microsoft.Xna.Framework.Graphics;
-
-namespace alice.engine.graphics
+namespace alice.engine
 {
     public class Canvas
     {

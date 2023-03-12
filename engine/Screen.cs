@@ -1,8 +1,5 @@
 ﻿using System;
 
-using alice.engine.components;
-using alice.engine.graphics;
-using alice.engine.maths;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -47,10 +44,10 @@ namespace alice.engine
         {
             spritesBatch.Begin(null, true, true);
 
-            engine.debugging.Debugging.DrawUI(spritesBatch);
+            engine.Debugging.DrawUI(spritesBatch);
             activeCamera.DrawCanvas(spritesBatch);
 
-            spritesBatch.shapes.DrawRectangleOutline(UIComponent.windowMouseRectangle, engine.graphics.Color.Random, 5);
+            spritesBatch.shapes.DrawRectangleOutline(UIComponent.windowMouseRectangle, engine.Color.Random, 5);
 
             spritesBatch.End();
 

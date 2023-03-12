@@ -1,9 +1,9 @@
-﻿using alice.engine.internals;
+﻿
 
 using System;
 using System.IO;
 
-namespace alice.engine.graphics
+namespace alice.engine
 {
     public class FontManager
     {
